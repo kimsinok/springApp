@@ -1,7 +1,6 @@
-# 워크플로우 이름
+
 name: Java CI with Gradle
 
-# main 브랜치에 push 또는 풀 리퀘스트를 이벤트를 요청하는 경우 워크플로우가 실행된다.
 on:
   push:
     branches: [ "main" ]
@@ -12,7 +11,7 @@ permissions:
   contents: read
       
 jobs:
-  # 빌드 작업 
+
   build:
     runs-on: ubuntu-22.04
     
@@ -40,8 +39,8 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: 'springapp.jar'
-        path: 'build/libs/springapp-0.0.1-SNAPSHOT.jar'
+        name: 'springapp-jar'
+        path: build/libs/springapp-0.0.1-SNAPSHOT.jar
       
     - name: Copy jar file to remote
       uses: appleboy/scp-action@v0.1.7
@@ -49,7 +48,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
-        source: "./build/libs/springapp-jar"
+        source: "./build/libs/springapp-0.0.1-SNAPSHOT.jar"
         target: "/home/ubuntu/cicd"
     
     - name: Copy deploy script file to remote
