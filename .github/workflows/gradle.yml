@@ -48,7 +48,16 @@ jobs:
         name: springapp-jar
         path: build/libs/springapp-0.0.1-SNAPSHOT.jar
       
-
+    - name: execute remote ssh commands using ssh key
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          whoami
+          ls -al
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
