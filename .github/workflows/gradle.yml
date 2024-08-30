@@ -12,14 +12,14 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+    
+permissions:
+  contents: read
+      
 jobs:
   build:
-
     runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-
+    
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
@@ -27,37 +27,51 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-
     - name: Grant execute permission for gradlew
-      run: chmod +x ./gradlew
-      
+      run: chmod +x ./gradlew      
     - name: Build with Gradle Wrapper
       run: ./gradlew build
-
     - name: List JAR file
       run: ls -al build/libs/
-
-    - name: Upload JAR file
+    - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: springapp-jar
         path: build/libs/springapp-0.0.1-SNAPSHOT.jar
       
-    - name: execute remote ssh commands using ssh key
-      uses: appleboy/ssh-action@v0.1.10
+    - name: Copy jar file to remote
+      uses: appleboy/scp-action@main
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}
+        source: "./build/libs/springapp-0.0.1-SNAPSHOT.jar"
+        target: "/home/ubuntu/cicd"
+    
+    - name: Copy deploy script file to remote
+      uses: appleboy/scp-action@main
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
+        source: "deploy.sh"
+        target: "/home/ubuntu/cicd"
+    
+    - name: Execute deploy script
+      uses: appleboy/ssh-action@main
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
+        script_stop: true
         script: |
-          whoami
-          ls -al
+          chmod +x /home/ubuntu/cide/deploy.sh
+          sh /home/ubuntu/cide/deploy.sh
+
+
+        
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
