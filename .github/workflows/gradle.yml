@@ -39,14 +39,14 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build
 
-    - name: Upload JAR file
+    - name: List JAR file
       run: ls -al build/libs/
 
     - name: Upload JAR file
       uses: actions/upload-artifact@v3
       with:
         name: springapp-jar
-        path: build/libs/*.jar
+        path: build/libs/springapp-0.0.1-SNAPSHOT.jar
       
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
