@@ -66,10 +66,11 @@ jobs:
         target: "/home/ubuntu/cicd"
     
     - name: Execute deploy script
-      uses: appleboy/ssh-action@0.1.7
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
         key: ${{ secrets.LAB_EC2_PRIVATE_KEY }}
         script_stop: true
         script: |
