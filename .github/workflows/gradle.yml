@@ -40,8 +40,8 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: springapp-0.0.1-SNAPSHOT.jar
-        path: build/libs/springapp-0.0.1-SNAPSHOT.jar
+        name: 'springapp.jar'
+        path: 'build/libs/springapp-0.0.1-SNAPSHOT.jar'
       
     - name: Copy jar file to remote
       uses: appleboy/scp-action@v0.1.7
